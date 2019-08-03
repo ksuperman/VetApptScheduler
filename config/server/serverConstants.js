@@ -1,0 +1,25 @@
+const DEFAULT_SERVER_PORT = 3000;
+
+const APP_SESSION_SERVER_KEY = 'SERVER_KEY_SESSION';
+
+const HTTP_STATUS_CODES = {
+    // Success HTTP Codes
+    OK: 200,
+    CREATED: 201,
+
+    // Client Error HTTP Codes
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    UNPROCESSABLE_ENTITY: 422,
+
+    // Server Error HTTP Codes
+    INTERNAL_SERVER_ERROR: 500,
+};
+
+module.exports = {
+    DEFAULT_SERVER_PORT,
+    APP_SESSION_SERVER_KEY,
+    HTTP_STATUS_CODES
+};

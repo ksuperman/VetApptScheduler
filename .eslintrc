@@ -1,0 +1,114 @@
+{
+  "extends": [
+    "airbnb-base",
+    "plugin:react/recommended"
+  ],
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true,
+      "experimentalDecorators": true
+    }
+  },
+  "rules": {
+    "array-bracket-spacing": "error",
+    "arrow-parens": "error",
+    "brace-style": "error",
+    "comma-dangle": "error",
+    "comma-spacing": "error",
+    "class-methods-use-this": "warn",
+    "curly": "error",
+    "eol-last": "error",
+    "func-call-spacing": "error",
+    "indent": [
+      "error",
+      4
+    ],
+    "jest/prefer-to-have-length": "off",
+    "key-spacing": "error",
+    "keyword-spacing": "error",
+    "max-len": [
+      "error",
+      {
+        "code": 190,
+        "ignoreComments": true,
+        "ignoreTrailingComments": true,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
+    ],
+    "no-case-declarations": "warn",
+    "no-confusing-arrow": [
+      "error",
+      {
+        "allowParens": true
+      }
+    ],
+    "no-multi-assign": "warn",
+    "no-multi-spaces": "error",
+    "no-script-url": "off",
+    "no-underscore-dangle": "off",
+    "no-unused-vars": [
+      "warn",
+      {
+        "args": "none",
+        "ignoreRestSiblings": true
+      }
+    ],
+    "object-curly-spacing": "error",
+    "object-property-newline": [
+      "error",
+      {
+        "allowAllPropertiesOnSameLine": true
+      }
+    ],
+    "import/prefer-default-export": "off",
+    "import/no-dynamic-require": "off",
+    "react/prop-types": "off",
+    "semi": "error",
+    "space-before-blocks": "error",
+    "space-in-parens": "error",
+    "space-infix-ops": "error",
+    "space-unary-ops": "error",
+    "switch-colon-spacing": "error",
+    "spaced-comment": ["error", "always", {
+      "line": {
+        "markers": ["/"],
+        "exceptions": ["-", "+"]
+      },
+      "block": {
+        "markers": ["!"],
+        "exceptions": ["*"],
+        "balanced": true
+      }
+    }]
+  },
+  "overrides": [
+    {
+      "files": ["*.css.js"],
+      "rules": {
+        "no-unused-expressions": "off",
+        "camelcase": "off"
+      }
+    }
+  ],
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "globals": {
+    "window": true,
+    "document": true,
+    "PPlogger": true,
+    "requireClient": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

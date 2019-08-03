@@ -1,0 +1,22 @@
+{
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "description": "A Web Application for Pet Owners to Schedule an Appointment with Veterinarians ",
+  "env": {
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "VetApptScheduler",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
