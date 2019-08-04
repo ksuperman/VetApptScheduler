@@ -53,3 +53,5 @@ class BaseExceptions extends Error {
 Object.defineProperty(BaseExceptions.prototype, Symbol.toStringTag, {
     value: 'BaseExceptions',
 });
+
+module.exports = BaseExceptions;

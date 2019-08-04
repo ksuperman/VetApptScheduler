@@ -9,25 +9,35 @@ const appDirectory = fs.realpathSync(process.cwd());
  */
 const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 
-// Path to the Client Source Folder
-const appClientSrc = resolveApp('client');
-
 // Path to the Server Source Folder
-const appServerSrc = resolveApp('server');
+const appServerSrcPath = resolveApp('server');
 
-// Path to Server appplcation views folder.
-const appServerViews = path.join(appServerSrc, 'views');
+// Path to Server application views folder.
+const appServerViews = path.join(appServerSrcPath, 'views');
 
 // Path to the Dist Folder to serve the Client application.
-const appDistFolder = resolveApp('dist');
+const appDistFolderPath = resolveApp('dist');
+
+// Public Folder External Name
+const appStaticPublicFolderName = 'public';
 
 // Path to get the Static Resources from the client.
-const appStaticPublicFolder = path.join(appDistFolder, 'public');
+const appStaticPublicFolderPath = path.join(appDistFolderPath, appStaticPublicFolderName);
+
+// Client JS files Path
+const appClientStaticDistJSPath = 'js';
+
+// Path to the Client Source Folder
+const appClientSrcPath = resolveApp('client');
 
 module.exports = {
-    appClientSrc,
-    appServerSrc,
-    appDistFolder,
+    // Server Paths
+    appServerSrcPath,
     appServerViews,
-    appStaticPublicFolder,
+    appStaticPublicFolderName,
+    appStaticPublicFolderPath,
+    // Client Paths
+    appDistFolderPath,
+    appClientStaticDistJSPath,
+    appClientSrcPath,
 };

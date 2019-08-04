@@ -1,5 +1,5 @@
 // Core imports
-const createError = require('http-errors');
+
 const express = require('express');
 
 // Middlewares
@@ -9,54 +9,45 @@ const CookieParserMiddleware = require('./middlewares/cookieParserMiddleware');
 const StaticFilesMiddleware = require('./middlewares/staticFilesMiddleware');
 const SessionMiddleware = require('./middlewares/sessionMiddleware');
 const LoggerMiddleware = require('./middlewares/loggerMiddleware');
+const CompressionMiddleware = require('./middlewares/compressionMiddleware');
+const ErrorHandlerMiddleware = require('./middlewares/errorHandlerMiddleware');
+const NotFoundMiddleware = require('./middlewares/notFoundMiddleware');
 
 // Supporting Files
-const { appStaticPublicFolder } = require('../config/paths');
-const indexRouter = require('./routers');
+const { appStaticPublicFolderPath } = require('../config/paths');
+const router = require('./routers');
 
 // Create an express application instance.
 const app = express();
 
 // Setup Logger Middleware
-const loggerMiddleware = new LoggerMiddleware();
-loggerMiddleware(app);
+LoggerMiddleware()(app);
+
+// Compression Middleware
+CompressionMiddleware()(app);
 
 // Setup View Engine for Express
-const viewEngineMiddleware = new ViewEngineMiddleware();
-viewEngineMiddleware(app);
+ViewEngineMiddleware()(app);
 
 // Setup Body parser
-const bodyParserMiddleware = new BodyParserMiddleware();
-bodyParserMiddleware(app);
+BodyParserMiddleware()(app);
 
 // Cookie Parser
-const cookieParserMiddleware = new CookieParserMiddleware();
-cookieParserMiddleware(app);
+CookieParserMiddleware()(app);
 
 // Setting up Request Session
-const staticFilesMiddleware = new StaticFilesMiddleware(appStaticPublicFolder);
-staticFilesMiddleware(app);
+StaticFilesMiddleware(appStaticPublicFolderPath)(app);
 
 // Setting up Static Resource Folder
-const sessionMiddleware = new SessionMiddleware();
-sessionMiddleware(app);
+SessionMiddleware()(app);
 
-app.use('/', indexRouter);
+// Handle the Application Routing
+app.use(router);
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
-    next(createError(404));
-});
+NotFoundMiddleware()(app);
 
-// error handler
-app.use((err, req, res, next) => {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
+// Setup the Error handler Middleware
+ErrorHandlerMiddleware()(app);
 
 module.exports = app;

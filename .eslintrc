@@ -42,6 +42,7 @@
       }
     ],
     "no-case-declarations": "warn",
+    "consistent-return": "off",
     "no-confusing-arrow": [
       "error",
       {

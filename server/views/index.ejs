@@ -1,11 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="<%= PUBLIC_FOLDER_NAME %>/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="<%= PUBLIC_FOLDER_NAME %>/manifest.json">
+    <title>Veterinary Appointment Management System</title>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <div id="app-root"></div>
+    <form action="/api/auth/login" method="post">
+        <input name="username" id="username" type="text" placeholder="Your username"/>
+        <input name="password" id="password" type="password" placeholder="Your password"/>
+        <input type="submit"/>
+    </form>
   </body>
 </html>

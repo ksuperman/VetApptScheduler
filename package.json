@@ -11,9 +11,14 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node ./index.js",
-    "dev": "DATABASE_URL=$(heroku config:get DATABASE_URL -a your-app) DEBUG=vetapptschduler* node ./index.js",
-    "heroku:publish": "git push heroku master"
+    "start": "pm2 start ./index.js -i max",
+    "dev": "concurrently \"webpack --config ./config/client/webpack/webpack.config.js -w\" \"DATABASE_URL=postgres://gvmwuyrsdnqmdv:cc14a167daceca9636a81e51d8dba726ee385780f0f111a0de6f4e2a55e06750@ec2-174-129-227-205.compute-1.amazonaws.com:5432/d60s8gt84abon2 DEBUG=vetapptschduler* node ./index.js\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "dependency:check": "ncu",
+    "dependency:update": "ncu -u",
+    "heroku:publish": "git push heroku master",
+    "heroku:db:cli": "heroku pg:psql"
   },
   "engines": {
     "node": "10.16.1",
@@ -27,7 +32,15 @@
     "heroku",
     "express"
   ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run dependency:check"
+    }
+  },
   "dependencies": {
+    "bcrypt": "^3.0.6",
+    "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
     "debug": "~4.1.1",
     "ejs": "~2.6.2",
@@ -35,14 +48,39 @@
     "express-session": "^1.16.2",
     "http-errors": "~1.7.3",
     "morgan": "~1.9.1",
-    "pg": "^7.12.0"
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pg": "^7.12.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "redux": "^4.0.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/plugin-transform-regenerator": "^7.4.5",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^10.0.2",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-dynamic-import-webpack": "^1.1.0",
+    "concurrently": "^4.1.1",
+    "copy-webpack-plugin": "^5.0.4",
     "eslint": "^6.1.0",
     "eslint-config-airbnb": "^17.1.1",
+    "eslint-loader": "^2.2.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-react": "^7.14.3",
-    "npm-check-updates": "^3.1.20"
+    "husky": "^3.0.2",
+    "npm-check-updates": "^3.1.20",
+    "pm2": "^3.5.1",
+    "prop-types": "^15.7.2",
+    "sw-precache-webpack-plugin": "^0.11.5",
+    "terser-webpack-plugin": "^1.4.1",
+    "webpack": "^4.39.1",
+    "webpack-bundle-analyzer": "^3.4.1",
+    "webpack-cli": "^3.3.6"
   }
 }

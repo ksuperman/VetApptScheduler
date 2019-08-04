@@ -1,10 +1,16 @@
 const express = require('express');
+const initPassport = require('../lib/passport/passportAuthentication');
+const unSecuredRouter = require('./unSecuredRouter');
+const securedRouter = require('./securedRouter');
 
-const router = express.Router();
+// Create an Application Router to handle the requests
+const router = module.exports = express.Router();
 
-/* GET home page. */
-router.get('/', (req, res) => {
-    res.render('index', { title: 'Express' });
-});
+// Initialize the passport
+initPassport(router);
 
-module.exports = router;
+// Attach the unsecured Router.
+router.use(unSecuredRouter);
+
+// Attach the secured Router.
+router.use(securedRouter);

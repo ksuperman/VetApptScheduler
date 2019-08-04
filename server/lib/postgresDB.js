@@ -1,22 +1,41 @@
 const debug = require('debug')('vetapptschduler:Postgres');
 const { Pool } = require('pg');
 const PostgresError = require('../helpers/errors/PostgresError');
-
+const { isEmpty } = require('../utils/objectUtils');
 /**
  * Postgres Database handler Class.
  */
-class Postgres {
-    static __defaultOptions = {
-        connectionString: process.env.DATABASE_URL,
-        ssl: true,
-    };
+class PostgresDBHandler {
+    /**
+     * Default options to connect to the postgres server
+     */
+    static get __defaultOptions() {
+        return {
+            connectionString: process.env.DATABASE_URL,
+            ssl: true,
+        };
+    }
+
+    /**
+     * Field Types Mapping for Postgres SQL.
+     */
+    get FIELD_TYPES() {
+        return {
+            SERIAL: 'DEFAULT',
+            STRING: 'STRING',
+            DATE: 'DATE',
+            TIMESTAMP: 'TIMESTAMP',
+            NUMBER: 'NUMBER',
+            BOOLEAN: 'BOOLEAN',
+        };
+    }
 
     /**
      * Constructor to create an instance of Postgres SQL database handler.
      */
     constructor(options = {}) {
         debug('constructor::options::', options);
-        this.options = { ...Postgres.__defaultOptions, ...options };
+        this.options = { ...PostgresDBHandler.__defaultOptions, ...options };
         this.__pool = this.__createPool();
         this.__subscribePoolEvents();
     }
@@ -45,13 +64,38 @@ class Postgres {
             idleCount: this.__pool.idleCount,
             waitingCount: this.__pool.waitingCount,
         };
+        debug('PostgresError::%e', err);
         throw new PostgresError(err.name, err.message, details);
     }
 
     /**
      * Method to get the Client instance from the connection pool.
      */
-    getDBClientFromPool = async () => this.__pool.connect();
+    async getDBClientFromPool() {
+        debug('getDBClientFromPool');
+        return this.__pool.connect();
+    }
+
+    async fetchOne(query, data) {
+        let result;
+        let client;
+        // Fetch the Data from the Database.
+        try {
+            client = await this.getDBClientFromPool();
+            result = await client.query(query, data) || {};
+        } finally {
+            if (client) {
+                client.release();
+            }
+        }
+        // Get the row from result
+        const { rows = [] } = result;
+        if (!isEmpty(rows)) {
+            return rows[0];
+        }
+        // By Default Return undefined
+        return undefined;
+    }
 }
 
-module.exports = Postgres;
+module.exports = PostgresDBHandler;
