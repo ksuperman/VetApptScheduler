@@ -17,7 +17,8 @@
     "lint:fix": "eslint . --fix",
     "dependency:check": "ncu",
     "dependency:update": "ncu -u",
-    "heroku:publish": "git push heroku master",
+    "heroku:server:publish": "git push heroku master",
+    "heroku:server:logs": "heroku logs --tail",
     "heroku:db:cli": "heroku pg:psql"
   },
   "engines": {
@@ -56,9 +57,12 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "redux": "^4.0.4"
-  },
-  "devDependencies": {
+    "redux": "^4.0.4",
+    "sw-precache-webpack-plugin": "^0.11.5",
+    "terser-webpack-plugin": "^1.4.1",
+    "webpack": "^4.39.1",
+    "webpack-bundle-analyzer": "^3.4.1",
+    "webpack-cli": "^3.3.6",
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-decorators": "^7.4.4",
@@ -69,18 +73,15 @@
     "babel-eslint": "^10.0.2",
     "babel-loader": "^8.0.6",
     "babel-plugin-dynamic-import-webpack": "^1.1.0",
-    "copy-webpack-plugin": "^5.0.4",
+    "copy-webpack-plugin": "^5.0.4"
+  },
+  "devDependencies": {
     "eslint": "^6.1.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-loader": "^2.2.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-react": "^7.14.3",
     "husky": "^3.0.2",
-    "npm-check-updates": "^3.1.20",
-    "sw-precache-webpack-plugin": "^0.11.5",
-    "terser-webpack-plugin": "^1.4.1",
-    "webpack": "^4.39.1",
-    "webpack-bundle-analyzer": "^3.4.1",
-    "webpack-cli": "^3.3.6"
+    "npm-check-updates": "^3.1.20"
   }
 }
