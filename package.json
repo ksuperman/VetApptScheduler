@@ -11,7 +11,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start ./index.js -i max",
+    "start": "pm2-runtime start ./index.js -i max",
     "dev": "concurrently \"webpack --config ./config/client/webpack/webpack.config.js -w\" \"DATABASE_URL=postgres://gvmwuyrsdnqmdv:cc14a167daceca9636a81e51d8dba726ee385780f0f111a0de6f4e2a55e06750@ec2-174-129-227-205.compute-1.amazonaws.com:5432/d60s8gt84abon2 DEBUG=vetapptschduler* node ./index.js\"",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
