@@ -1,0 +1,22 @@
+.InputField__InputPlaceholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 6px 0 0 7px;
+    transition: all 200ms;
+    opacity: 0.5;
+    width: 100%;
+}
+.InputField__Input{
+    line-height: 1.5;
+    width: 100%;
+}
+
+.InputField__Input:focus + .InputField__InputPlaceholder,
+.InputField__Input:valid + .InputField__InputPlaceholder {
+    font-size: 75%;
+    transform: translate3d(0, -100%, 0);
+    opacity: 1;
+    color: white;
+    padding: 7px 0px 4px 0px;
+}

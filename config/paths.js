@@ -24,11 +24,16 @@ const appStaticPublicFolderName = 'public';
 // Path to get the Static Resources from the client.
 const appStaticPublicFolderPath = path.join(appDistFolderPath, appStaticPublicFolderName);
 
-// Client JS files Path
-const appClientStaticDistJSPath = 'js';
+// Client JS folder Name
+const appClientStaticDistJSName = 'js';
+
+// Client JS folder path
+const appClientStaticDistJSPath = path.join(appDistFolderPath, appClientStaticDistJSName);
 
 // Path to the Client Source Folder
-const appClientSrcPath = resolveApp('client');
+const appClientPath = resolveApp('client');
+
+const appClientSrcPath = path.join(appClientPath, 'src');
 
 module.exports = {
     // Server Paths
@@ -38,6 +43,8 @@ module.exports = {
     appStaticPublicFolderPath,
     // Client Paths
     appDistFolderPath,
+    appClientStaticDistJSName,
     appClientStaticDistJSPath,
+    appClientPath,
     appClientSrcPath,
 };

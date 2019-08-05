@@ -1,5 +1,5 @@
 const session = require('express-session');
-const { APP_SESSION_SERVER_KEY } = require('../../config/server/serverConstants');
+const { APP_SESSION_SERVER_KEY } = require('../constants');
 
 /**
  * Attach and Configure the Body Parser for the express app.

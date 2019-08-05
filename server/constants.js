@@ -30,6 +30,7 @@ const SERVER_ROUTE_URL = {
     HOME: '/',
     DASHBOARD: '/dashboard',
     UNSECURED_API: '/api',
+    JS_FILES: '/js',
 };
 
 module.exports = {

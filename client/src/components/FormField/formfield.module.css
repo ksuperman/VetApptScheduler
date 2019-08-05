@@ -1,0 +1,9 @@
+.FormField__Container {
+    position: relative;
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.FormField__Container--center {
+    text-align: center;
+}

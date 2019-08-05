@@ -5,7 +5,7 @@ const http = require('http');
 const debug = require('debug')('vetapptschduler:server_core');
 const app = require('./app');
 const { normalizePort } = require('../server/utils/serverUtils');
-const { DEFAULT_SERVER_PORT } = require('../config/server/serverConstants');
+const { DEFAULT_SERVER_PORT } = require('./constants');
 
 
 /**

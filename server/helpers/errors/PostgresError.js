@@ -1,5 +1,5 @@
 const BaseExceptions = require('./BaseException');
-const { HTTP_STATUS_CODES } = require('../../../config/server/serverConstants');
+const { HTTP_STATUS_CODES } = require('../../constants');
 /**
  * Class to handle the Postgres Exception
  * @extends BaseExceptions

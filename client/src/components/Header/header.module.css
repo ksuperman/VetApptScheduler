@@ -1,0 +1,46 @@
+.Header__Container{
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(51, 51, 51, 0.3);
+    z-index: 11;
+    display: flex;
+}
+
+.Header__Wrapper {
+    padding: 20px 15px;
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 100%;
+}
+
+.Header__Row {
+    display: flex;
+    align-items: center!important;
+    justify-content: space-between;
+}
+
+.Header__Column {
+    width: 100%;
+}
+
+.Header_AccountActionButton_Container {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.Header__ActionButton{
+    margin: 10px 0 0 19px;
+}
+
+.Header__CompanyLogoContainer{
+}
+
+.Header__CompanyLogo{
+    max-width: 150px;
+}

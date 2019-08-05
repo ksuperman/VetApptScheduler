@@ -1,0 +1,12 @@
+.ColumnLayout__Container {
+    display: flex;
+}
+
+.ColumnLayout__Column {
+    width: 100%;
+    padding: 5px;
+}
+
+.ColumnLayout__ContentCenterAlign {
+    text-align: center;
+}

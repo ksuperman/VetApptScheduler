@@ -11,8 +11,23 @@ const coreDatabaseHandler = getDatabaseHandler(DATA_SOURCE_CORE_DATA, {});
 /**
  * Method to get the user by username.
  */
-const getUserByUserName = async userName => coreDatabaseHandler.fetchOne(userModel.SQL_STATEMENT_BY_OPERATION.FIND_ACTIVE_USER_BY_USERNAME, [userName]);
+const getUserByUserName = async userName => coreDatabaseHandler.fetchOrInsertOne(userModel.SQL_STATEMENT_BY_OPERATION.FIND_ACTIVE_USER_BY_USERNAME, [userName]);
+
+/**
+ * Method to create account.
+ */
+const createAccount = async (user = {}) => coreDatabaseHandler.fetchOrInsertOne(userModel.SQL_STATEMENT_BY_OPERATION.INSERT_USER, [
+    user.username,
+    user.password,
+    user.role,
+    user.firstName,
+    user.lastName,
+    user.phoneNumber,
+    user.email,
+    userModel.TABLE_COLUMN_ENUMS.STATUS.ACTIVE,
+]);
 
 module.exports = {
+    createAccount,
     getUserByUserName,
 };

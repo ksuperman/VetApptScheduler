@@ -3,9 +3,12 @@ const path = require('path');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {
     appDistFolderPath,
-    appClientStaticDistJSPath,
+    appClientStaticDistJSName,
+    appClientPath,
     appClientSrcPath,
     appStaticPublicFolderName,
     appStaticPublicFolderPath,
@@ -32,22 +35,30 @@ const plugins = [
         openAnalyzer: false,
     }),
     new CopyPlugin([
-        { from: path.join(appClientSrcPath, appStaticPublicFolderName), to: appStaticPublicFolderPath },
+        { from: path.join(appClientPath, appStaticPublicFolderName), to: appStaticPublicFolderPath },
     ]),
+    new SWPrecacheWebpackPlugin({
+        cacheId: 'my-project-name',
+        dontCacheBustUrlsMatching: /\.\w{8}\./,
+        filename: path.join(appStaticPublicFolderName, 'service-worker.js'),
+        minify: true,
+        // navigateFallback: PUBLIC_PATH + 'index.html',
+        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+    }),
+    new WebpackAssetsManifest({
+        writeToDisk: true,
+        output: path.join(appStaticPublicFolderPath, 'manifest.json'),
+    }),
+    // new MiniCssExtractPlugin({
+    //     // Options similar to the same options in webpackOptions.output
+    //     // all options are optional
+    //     filename: '[name].[id].[contenthash].css',
+    //     chunkFilename: '[name].[id].[contenthash].css',
+    //     ignoreOrder: false, // Enable to remove warnings about conflicting order
+    // }),
 ];
 
 if (isProd()) {
-    plugins.push(
-        new SWPrecacheWebpackPlugin({
-            cacheId: 'my-project-name',
-            dontCacheBustUrlsMatching: /\.\w{8}\./,
-            filename: 'service-worker.js',
-            minify: true,
-            // navigateFallback: PUBLIC_PATH + 'index.html',
-            staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-        }),
-    );
-
     minimizer.push(
         new TerserPlugin({
             sourceMap: true, // Must be set to true if using source-maps in production
@@ -87,19 +98,47 @@ const baseConfig = {
                 exclude: excludeModulesPaths,
                 use: ['babel-loader', 'eslint-loader'],
             },
+            {
+                test: /\.css/,
+                use: [
+                    // {
+                    //     loader: MiniCssExtractPlugin.loader,
+                    //     options: {
+                    //         // you can specify a publicPath here
+                    //         // by default it uses publicPath in webpackOptions.output
+                    //         // publicPath: '../',
+                    //         hmr: process.env.NODE_ENV === 'development',
+                    //     },
+                    // },
+                    { loader: 'style-loader' },
+                    {
+                        loader: 'css-loader',
+                        options: { modules: true },
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            config: {
+                                path: `${__dirname}/postcss.config.js`,
+                            },
+                        },
+                    },
+                ],
+                include: appClientSrcPath,
+            },
         ],
     },
 
     output: {
-        library: 'VetApptManagement',
+        // library: 'VetApptManagement',
         // Next line is not used in dev but WebpackDevServer crashes without it:
         path: appDistFolderPath,
         // This does not produce a real file. It's just the virtual path that is
         // served by WebpackDevServer in development. This is the JS bundle
         // containing code from all our entry points, and the Webpack runtime.
-        filename: path.join(appClientStaticDistJSPath, 'core.js'),
+        filename: path.join(appClientStaticDistJSName, 'core.js'),
         // There are also additional JS chunk files if you use code splitting.
-        chunkFilename: path.join(appClientStaticDistJSPath, '[name].[contenthash].chunk.js'),
+        chunkFilename: path.join(appClientStaticDistJSName, '[name].[contenthash].chunk.js'),
         // Add /* filename */ comments to generated require()s in the output.
         pathinfo: true,
         // This is the URL that app is served from. We use "/" in development.
@@ -109,31 +148,18 @@ const baseConfig = {
     },
 
     optimization: {
-        // @TODO - Disable this in Prod
-        namedChunks: true,
-        chunkIds: 'named',
-        // @TODO - Check if the split chunks optimization is needed.
-        // splitChunks: {
-        //     name: true,
-        // },
         splitChunks: {
             name: true,
             cacheGroups: {
                 react: {
                     chunks: 'all',
                     name: 'react',
-                    test: /[\\/]node_modules[\\/](react|react-dom|cxs)[\\/]/,
-                    enforce: true,
-                },
-                reactFinalForm: {
-                    chunks: 'all',
-                    name: 'react-final-form',
-                    test: /react-final-form/,
+                    test: /[\\/]node_modules[\\/](react|react-dom|redux|cxs)[\\/]/,
                     enforce: true,
                 },
             },
         },
-        // runtimeChunk: true,
+        // runtimeChunk: 'single',
         minimizer,
     },
 };

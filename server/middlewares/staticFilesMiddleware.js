@@ -1,11 +1,11 @@
 const express = require('express');
 
 /**
- * Attach and Configure the Body Parser for the express app.
+ * Attach and Configure the Static File Serve for the express app.
  */
 function StaticFilesMiddleware(staticPublicFolderPath) {
     return (app) => {
-        // Body parser
+        // Static File Server
         app.use(express.static(staticPublicFolderPath));
     };
 }

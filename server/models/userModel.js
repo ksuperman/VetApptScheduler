@@ -11,15 +11,17 @@ const coreDatabaseHandler = getDatabaseHandler(DATA_SOURCE_CORE_DATA, {});
 // Get the field type mapping from the core database handler
 const { FIELD_TYPES } = coreDatabaseHandler;
 
-/**
- * String Constant containing the ENUM value ACTIVE for column STATUS
- */
-const STATUS_ACTIVE = 'Y';
-
-/**
- * String Constant containing the ENUM value INACTIVE for column STATUS
- */
-const STATUS_INACTIVE = 'N';
+// ENUM for the Column Status
+const STATUS = {
+    /**
+     * String Constant containing the ENUM value ACTIVE for column STATUS
+     */
+    ACTIVE: 'Y',
+    /**
+     * String Constant containing the ENUM value INACTIVE for column STATUS
+     */
+    INACTIVE: 'N',
+};
 
 /**
  * Object Constant containing the Table Name
@@ -50,8 +52,8 @@ const tableColumnNames = Object.keys(TABLE_COLUMNS);
  * Object Constant containing the Mappings for the Operations to the relevant SQL Statement.
  */
 const SQL_STATEMENT_BY_OPERATION = {
-    INSERT_RECORD: `INSERT INTO ${TABLE_NAME} (${tableColumnNames.join(',')}) VALUES (${tableColumnNames.join(',')})`,
-    FIND_ACTIVE_USER_BY_USERNAME: `SELECT ${tableColumnNames.join(',')} FROM ${TABLE_NAME} WHERE USERNAME = $1 AND STATUS = '${STATUS_ACTIVE}'`,
+    INSERT_USER: `INSERT INTO ${TABLE_NAME} (${tableColumnNames.slice(1).join(',')}) VALUES (${tableColumnNames.slice(1).map((column, index) => `$${index + 1}`).join(',')}) RETURNING *`,
+    FIND_ACTIVE_USER_BY_USERNAME: `SELECT ${tableColumnNames.join(',')} FROM ${TABLE_NAME} WHERE USERNAME = $1 AND STATUS = '${STATUS.ACTIVE}'`,
 };
 
 /**
@@ -63,8 +65,7 @@ module.exports = {
     TABLE_NAME,
     TABLE_COLUMNS,
     TABLE_COLUMN_ENUMS: {
-        STATUS_ACTIVE,
-        STATUS_INACTIVE,
+        STATUS,
     },
     SQL_STATEMENT_BY_OPERATION,
 };

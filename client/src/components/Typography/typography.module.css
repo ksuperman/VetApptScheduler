@@ -1,0 +1,12 @@
+.container {
+  margin: 0;
+  color: white;
+}
+
+.centerAlign {
+  text-align: center;
+}
+
+.capitalize {
+  text-transform: uppercase;
+}
