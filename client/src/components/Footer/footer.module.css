@@ -2,11 +2,12 @@
     border-color: #343941;
     border-top-width: 0px;
     padding: 10px;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
     left: 0;
     background-color: rgba(51, 51, 51, .3);
     z-index: 11;
     display: flex;
+    justify-content: center;
 }

@@ -1,0 +1,32 @@
+.Select__Container {
+    width: 100%;
+    line-height: 1.5;
+    height: 30px;
+}
+
+.Select__InputPlaceholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 6px 0 0 7px;
+    transition: all 200ms;
+    opacity: 0.5;
+    width: 100%;
+}
+.Select__Container{
+    line-height: 1.5;
+    width: 100%;
+}
+
+.Select__Container:focus + .Select__InputPlaceholder,
+.Select__Container:valid + .Select__InputPlaceholder {
+    font-size: 75%;
+    transform: translate3d(0, -100%, 0);
+    opacity: 1;
+    color: white;
+    padding: 7px 0px 4px 0px;
+}
+
+.Select__Container--multiple {
+    height: 60px;
+}

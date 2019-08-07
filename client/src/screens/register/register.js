@@ -10,6 +10,7 @@ import Typography from '../../components/Typography';
 import Button from '../../components/Button';
 import Spinner from '../../components/Spinner';
 import { makeAPIRequest } from '../../utils/api';
+import appContext from '../../components/ApplicationContext/appContextDecorator';
 import {
     ROLE_TYPE,
 } from '../../constants';
@@ -208,4 +209,4 @@ const RegisterScreen = ({ history }) => {
     );
 };
 
-export default RegisterScreen;
+export default appContext(RegisterScreen);

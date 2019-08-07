@@ -16,8 +16,33 @@ const getSQLTimeFromDate = (date = new Date()) => (`${date.getUTCHours()}:${date
  */
 const getSQLTimeStampFromDate = (date = new Date()) => (getSQLDateFromDate(date) + getSQLTimeFromDate(date));
 
+/**
+ *  Method to get convert SQL Timestamp value to Date Object
+ */
+const getDateFromSQLTimeStamp = (sqlDateString = '', sqlTimeString = '00:00:00') => {
+    console.log('sqlDateString ===> ', sqlDateString);
+
+    console.log('sqlTimeString', sqlTimeString);
+
+    const sqlDateStringArr = sqlDateString.split('-');
+
+    // eslint-disable-next-line no-plusplus
+    --sqlDateStringArr[1];
+
+    const sqlTimeStringArr = sqlTimeString.split(':');
+
+    const sqlDateObject = new Date(Date.UTC(...sqlDateStringArr, ...sqlTimeStringArr));
+
+    // Return the Converted Date Object.
+    return sqlDateObject;
+};
+
+const getSQLTimeStampStringFromDateAndTimeString = (dateString, browserTimeString) => `${dateString} ${browserTimeString}:00`;
+
 module.exports = {
     getSQLDateFromDate,
     getSQLTimeFromDate,
     getSQLTimeStampFromDate,
+    getDateFromSQLTimeStamp,
+    getSQLTimeStampStringFromDateAndTimeString,
 };

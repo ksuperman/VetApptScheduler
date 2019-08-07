@@ -1,0 +1,56 @@
+.BANNER__Container {
+    color: white;
+    padding: 200px 0 0 0;
+    text-align: center;
+    background-color: rgba(51,51,51,.3);
+}
+
+.BANNER__h1 {
+    padding: 0 0 40px 0;
+    font-size: 4rem;
+}
+
+.BANNER__h2 {
+    padding: 0 0 40px 0;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.BANNER__Note {
+    padding: 50px 0 40px 0;
+    color: rgba(255, 255, 255,.54);
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+.BANNER__AccountActionButton {
+    margin: 10px 0 0 19px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .BANNER__h1 {
+        font-size: 3.125rem;
+    }
+    .BANNER__h2 {
+        font-size: 1.625rem;
+    }
+    .BANNER__Note {
+        padding: 60px 0 40px 0;
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    .BANNER__Container {
+        padding: 100px 0 0 0;
+    }
+    .BANNER__h1 {
+        padding: 0 0 25px 0;
+        font-size: 1.75rem;
+        line-height: 1.2;
+    }
+    .BANNER__h2 {
+        padding: 0 0 25px 0;
+        font-size: 1rem;
+    }
+}

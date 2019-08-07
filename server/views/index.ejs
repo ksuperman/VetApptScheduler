@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- DNS prefetching allows the browser to perform DNS lookups on a page in the background while the user is browsing. -->
+    <link rel="dns-prefetch" href="https://polar-everglades-87635.herokuapp.com/">
+
+    <!-- Preload is a new web standard that offers more control on how particular resources are fetched for current navigation. -->
+    <link rel="preload" href="/js/core.js" as="script">
+
+    <!-- link prefetching allows the browser to fetch resources, store them in cache, assuming that the user will request them. -->
+    <link rel="prefetch" href="/images/background.png">
+
+    <!-- Prerendering is very similar to prefetching in that it gathers resources that the user may navigate to next. -->
+    <link rel="prerender" href="/login">
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -19,14 +31,12 @@
     -->
     <link rel="manifest" href="/manifest.json">
     <title>Veterinary Appointment Management System</title>
+    <script>
+        window.__INITIAL_STATE__=JSON.parse('<%- USER %>');
+    </script>
 </head>
 <body>
 <div id="app-root"></div>
-<!--<form action="/api/auth/login" method="post">-->
-<!--    <input name="username" id="username" type="text" placeholder="Your username"/>-->
-<!--    <input name="password" id="password" type="password" placeholder="Your password"/>-->
-<!--    <input type="submit"/>-->
-<!--</form>-->
 <script async src="/js/core.js"></script>
 </body>
 </html>

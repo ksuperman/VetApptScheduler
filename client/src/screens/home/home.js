@@ -2,6 +2,7 @@ import React from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Layout from '../../components/PageLayout';
+import Banner from '../../components/Banner';
 
 const HomeScreen = ({ history }) => {
     const headerButtons = [
@@ -21,7 +22,7 @@ const HomeScreen = ({ history }) => {
 
     return (
         <Layout Header={<Header buttons={headerButtons}/>} Footer={ <Footer />}>
-        test
+            <Banner buttons={headerButtons.slice(1)}/>
         </Layout>
     );
 };

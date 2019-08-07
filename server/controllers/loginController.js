@@ -1,22 +1,38 @@
 const passport = require('passport');
-const { SERVER_ROUTE_URL, PASSPORT_AUTH_STRATEGY } = require('../constants');
+const debug = require('debug')('vetapptschduler:loginController');
+const { SECURED_SERVER_ROUTE_URL, SERVER_ROUTE_URL, PASSPORT_AUTH_STRATEGY, HTTP_STATUS_CODES } = require('../constants');
 
 const postLoginController = (req, res, next) => {
     passport.authenticate(PASSPORT_AUTH_STRATEGY.LOCAL, (error, user, info) => {
         if (error) {
-            return res.status(500).json(error);
+            debug('postLoginController::error::%e', error);
+            return res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json(error);
         }
+
         if (!user) {
-            return res.status(401).json(info.message);
+            debug('postLoginController::user not found::info::', info);
+            return res.status(HTTP_STATUS_CODES.UNAUTHORIZED).json({ errorCode: 'USER_OR_PASS_INCORRECT', details: 'USER_OR_PASS_INCORRECT' });
         }
-        res.json(user);
+
+        debug('postLoginController::USER_FOUND::info::', info, ':::::USER::::', user);
+
+        // If User Found then return user object.
+        req.login(user, (err) => {
+            if (err) {
+                debug('postLoginController::LOGIN_Error::%e', error);
+                return next(err);
+            }
+            debug('postLoginController::LOGIN_SUCCESS::%e', error);
+            return res.status(HTTP_STATUS_CODES.OK).json(user);
+        });
+        // return res.json(user);
     })(req, res, next);
 };
 
 const formLoginController = passport.authenticate(PASSPORT_AUTH_STRATEGY.LOCAL, {
-    successRedirect: SERVER_ROUTE_URL.DASHBOARD,
+    successRedirect: SECURED_SERVER_ROUTE_URL.DASHBOARD,
     failureRedirect: SERVER_ROUTE_URL.HOME,
-})
+});
 
 module.exports = {
     formLoginController,

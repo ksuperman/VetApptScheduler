@@ -1,7 +1,14 @@
 const passport = require('passport');
+const debug = require('debug')('vetapptschduler:passportLocalStrategy');
 const { Strategy: LocalStrategy } = require('passport-local');
-// const bcrypt = require('bcrypt');
+const { compareOriginalHashWithHashGeneratedForData } = require('../../helpers/cryptoHelper');
 const userDao = require('../../dao/userDao');
+const memoize = require('../../utils/memoizeUtil');
+
+/**
+ * Create a Memoize instance of the User Fetch Query to Save from going to DB.
+ */
+const memoizedGetUserByUserName = memoize(userDao.getUserByUserName);
 
 /**
  * Method to setup local strategy authentication.
@@ -10,38 +17,40 @@ const localStrategyAuthenticationCallback = async (username, password, done) => 
     let error;
     let user;
 
+    debug('localStrategyAuthenticationCallback::request==>username', username);
+    debug('localStrategyAuthenticationCallback::request==>password', password);
+
     try {
-        user = await userDao.getUserByUserName(username);
+        user = await memoizedGetUserByUserName(username);
     } catch (e) {
         error = e;
     }
 
-    console.log('error', error);
-
     if (error) {
+        debug('localStrategyAuthenticationCallback::error', error);
         return done(error);
     }
 
     // User not found
     if (!user) {
-        console.log('User not found');
+        debug('localStrategyAuthenticationCallback::USER_NOT_FOUND', error);
         return done(null, false);
     }
 
-    console.log('User found!!', user);
+    debug('localStrategyAuthenticationCallback::USER_FOUND!!', user);
 
+    // Check if the Passwords match.
+    const isValid = await compareOriginalHashWithHashGeneratedForData(password, user.password);
+
+    // If Passwords don't match with the db user cred send a FAILURE response to request.
+    if (!isValid) {
+        debug('localStrategyAuthenticationCallback::PASSWORD::NOT_VALID::', isValid);
+        return done(null, false);
+    }
+
+    // If Passwords match with the db user cred send a SUCCESS response to request.
+    debug('localStrategyAuthenticationCallback::PASSWORD::VALID::', isValid);
     return done(null, user);
-
-    // Always use hashed passwords and fixed time comparison
-    // bcrypt.compare(password, user.password, (err, isValid) => {
-    //     if (err) {
-    //         return done(err);
-    //     }
-    //     if (!isValid) {
-    //         return done(null, false);
-    //     }
-    //     return done(null, user);
-    // });
 };
 
 /**

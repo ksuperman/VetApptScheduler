@@ -1,13 +1,16 @@
 import React, { Component, Suspense } from 'react';
-import Router from './router';
-import Spinner from './components/Spinner';
+import ApplicationContextProvider from './components/ApplicationContext/ApplicationContextProvider';
+import Router from './routers';
+import Loading from './components/Loading';
 import './normailize.css';
 
 class App extends Component {
     render() {
         return (
-            <Suspense fallback={<Spinner />}>
-                <Router />
+            <Suspense fallback={<Loading />}>
+                <ApplicationContextProvider>
+                    <Router />
+                </ApplicationContextProvider>
             </Suspense>
         );
     }

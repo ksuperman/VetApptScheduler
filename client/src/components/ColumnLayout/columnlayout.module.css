@@ -4,7 +4,7 @@
 
 .ColumnLayout__Column {
     width: 100%;
-    padding: 5px;
+    padding: 10px 0;
 }
 
 .ColumnLayout__ContentCenterAlign {

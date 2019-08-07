@@ -28,15 +28,29 @@ const HTTP_STATUS_CODES = {
 // Server Routing Constants
 const SERVER_ROUTE_URL = {
     HOME: '/',
-    DASHBOARD: '/dashboard',
+    LOGIN: '/login',
+    REGISTER: '/register',
     UNSECURED_API: '/api',
     JS_FILES: '/js',
+    LOGOUT: '/logout',
+    CREATE_ACCOUNT: '/createaccount',
 };
+
+const SECURED_SERVER_ROUTE_URL = {
+    DASHBOARD: '/dashboard',
+    MAKE_APPOINTMENT: '/makeappointment',
+    ADD_PET: '/addpet',
+    API: '/api',
+    GET_PETS: '/users/:userId/pets',
+    GET_USERS: '/users',
+    GET_SERVICES: '/services',
+}
 
 module.exports = {
     DEFAULT_SERVER_PORT,
     APP_SESSION_SERVER_KEY,
     HTTP_STATUS_CODES,
     SERVER_ROUTE_URL,
+    SECURED_SERVER_ROUTE_URL,
     PASSPORT_AUTH_STRATEGY,
 };

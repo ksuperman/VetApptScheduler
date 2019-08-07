@@ -24,6 +24,7 @@ export const makeAPIRequest = ({
         }
         const { XMLHttpRequest } = window;
         const request = new XMLHttpRequest();
+        request.withCredentials = true;
         request.onreadystatechange = () => {
             const {
                 readyState, status, statusText, responseText,

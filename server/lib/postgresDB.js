@@ -79,6 +79,7 @@ class PostgresDBHandler {
             idleCount: this.__pool.idleCount,
             waitingCount: this.__pool.waitingCount,
         };
+        debug('PostgresError::', err);
         debug('PostgresError::%e', err);
         throw new PostgresError(err.name, err.message, details);
     }
@@ -95,9 +96,12 @@ class PostgresDBHandler {
      * Method to fetch or insert One Record.
      */
     async fetchOrInsertOne(query, data) {
+        debug('fetchOrInsertOne::query', query);
+        debug('fetchOrInsertOne::data', data);
         // Fetch the Data from the Database.
         const result = await this.execute(query, data) || {};
         // Get the row from result
+        debug('fetchOrInsertOne::result::rowCount::', result.rowCount);
         const { rows = [] } = result;
         if (!isEmpty(rows)) {
             return rows[0];
@@ -105,6 +109,25 @@ class PostgresDBHandler {
         // By Default Return undefined
         return undefined;
     }
+
+    /**
+     * Method to fetch or insert One Record.
+     */
+    async fetchAllRows(query, data) {
+        debug('fetchAllRows::query', query);
+        debug('fetchAllRows::data', data);
+        // Fetch the Data from the Database.
+        const result = await this.execute(query, data) || {};
+        // Get the row from result
+        debug('fetchAllRows::result::rowCount::', result.rowCount);
+        const { rows = [] } = result;
+        if (!isEmpty(rows)) {
+            return rows;
+        }
+        // By Default Return undefined
+        return undefined;
+    }
+
 
     /**
      * Method to execute an operation on a Database table.
@@ -117,19 +140,15 @@ class PostgresDBHandler {
             client = await this.getDBClientFromPool();
             result = await client.query(query, data) || {};
         } catch (err) {
+            debug('PostgresError::execute::', err);
             throw new PostgresError(err.routine, err.constraint, err.details);
         } finally {
             if (client) {
                 client.release();
             }
         }
-        // Get the row from result
-        const { rows = [] } = result;
-        if (!isEmpty(rows)) {
-            return rows;
-        }
         // By Default Return undefined
-        return undefined;
+        return result;
     }
 }
 
