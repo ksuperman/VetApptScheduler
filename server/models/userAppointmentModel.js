@@ -32,10 +32,17 @@ const getAppointmentByStartOverlappingEndTimes = (appointmentStartDateTimeStamp,
     + `AND (a.start_time <= '${appointmentEndDateTimeStamp}'))`;
 
 
+const getAppointmentByStartAndEndDateWithinRange = (appointmentStartDateTimeStamp, appointmentEndDateTimeStamp) => '(Select a.id, u.id, u.first_name, a.start_time, a.end_time'
+    + ' from public.appointment a, public.user u '
+    + 'WHERE a.veterinarian_id = u.id '
+    + `AND (a.start_time <= '${appointmentStartDateTimeStamp}') `
+    + `AND (a.end_time >= '${appointmentEndDateTimeStamp}'))`;
+
+
 /**
  * Select to Get Appointment which overlap with Start and End time.
  */
-const GET_APPOINTMENT_BY_OVERLAPPING_START_END_TIMES = (appointmentStartDateTimeStamp, appointmentEndDateTimeStamp) => `${getAppointmentByOverlappingStarttimes(appointmentStartDateTimeStamp)} UNION ${getAppointmentByOverlappingEndtimes(appointmentEndDateTimeStamp)} UNION ${getAppointmentByStartOverlappingEndTimes(appointmentStartDateTimeStamp, appointmentEndDateTimeStamp)}`;
+const GET_APPOINTMENT_BY_OVERLAPPING_START_END_TIMES = (appointmentStartDateTimeStamp, appointmentEndDateTimeStamp) => `${getAppointmentByOverlappingStarttimes(appointmentStartDateTimeStamp)} UNION ${getAppointmentByOverlappingEndtimes(appointmentEndDateTimeStamp)} UNION ${getAppointmentByStartOverlappingEndTimes(appointmentStartDateTimeStamp, appointmentEndDateTimeStamp)} UNION ${getAppointmentByStartAndEndDateWithinRange(appointmentStartDateTimeStamp, appointmentEndDateTimeStamp)}`;
 
 /**
  * Object Constant containing the Mappings for the Operations to the relevant SQL Statement.
