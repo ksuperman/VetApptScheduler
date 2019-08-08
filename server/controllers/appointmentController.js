@@ -1,5 +1,5 @@
 const debug = require('debug')('vetapptschduler:appointmentController');
-const { createAppointment } = require('../dao/appointmentDao');
+const { createAppointment, getAppointmentByUserIdAndRole } = require('../dao/appointmentDao');
 const { getUserByAppointmentAndRole } = require('../controllers/accountController');
 const { HTTP_STATUS_CODES } = require('../constants');
 /**
@@ -20,7 +20,7 @@ const createAppointmentInDB = async (req, res, next) => {
 
     debug('createAppointment scheduledDoctors ::', scheduledDoctors.length);
 
-    const isDocAppointmentConflicting = !!scheduledDoctors.find(doctor => parseInt(doctor.id, 10) === parseInt(appointmentRequest.veterinarianId, 10));
+    const isDocAppointmentConflicting = !scheduledDoctors.find(doctor => parseInt(doctor.id, 10) === parseInt(appointmentRequest.veterinarianId, 10));
 
     if (isDocAppointmentConflicting) {
         debug('createAppointment request :: DOC_APPT_CONFLICT ::doctor already found with appointment');
@@ -39,8 +39,25 @@ const createAppointmentInDB = async (req, res, next) => {
     return res.status(HTTP_STATUS_CODES.CREATED).json({ ...appointment });
 };
 
+/**
+ * Get all apointment for the user.
+ * e.g. req.params: { "userId": "34" }
+ */
+const getUserAppointments = async (req, res, next) => {
+    const { userId } = req.params;
+
+    const { role } = req.user;
+
+    debug('getUserAppointments request :: userId', userId);
+
+    debug('getUserAppointments request :: role', role);
+
+    const appointments = await getAppointmentByUserIdAndRole(userId, role);
+
+    res.status(HTTP_STATUS_CODES.OK).json([...appointments]);
+};
 
 module.exports = {
-    get: () => {},
+    get: getUserAppointments,
     post: createAppointmentInDB,
 };

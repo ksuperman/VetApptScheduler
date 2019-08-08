@@ -1,6 +1,7 @@
 const { DATA_SOURCE_CORE_DATA } = require('../helpers/databaseHelper');
 const getDatabaseHandler = require('../helpers/databaseHelper');
 const appointmentModel = require('../models/appointmentModel');
+const userPetAppointmentModel = require('../models/userPetAppointmentModel');
 
 /**
  * Get the Singleton Instance of the Core Database Handlers.
@@ -9,9 +10,19 @@ const appointmentModel = require('../models/appointmentModel');
 const coreDatabaseHandler = getDatabaseHandler(DATA_SOURCE_CORE_DATA, {});
 
 /**
- * Method to get the user by username.
+ * Method to get the appointments by user.
  */
-// const getPets = async userId => coreDatabaseHandler.fetchAllRows(petModel.SQL_STATEMENT_BY_OPERATION.GET_PETS_BY_PET_OWNER_ID, [userId]);
+const getAppointmentForPetOwner = async userId => coreDatabaseHandler.fetchAllRows(userPetAppointmentModel.SQL_STATEMENT_BY_OPERATION.GET_USER_APPOINTMENT_BY_PET_OWNER_ID, [userId]);
+
+const getAppointmentForDoctor = async userId => coreDatabaseHandler.fetchAllRows(userPetAppointmentModel.SQL_STATEMENT_BY_OPERATION.GET_USER_APPOINTMENT_BY_DOCTOR_ID, [userId]);
+
+const getAppointmentByUserIdAndRole = async (userId, role) => {
+    if (role === 'PET_OWNER') {
+        return getAppointmentForPetOwner(userId);
+    }
+
+    return getAppointmentForDoctor(userId);
+};
 
 /**
  * Method to create Appointment.
@@ -35,4 +46,5 @@ const createAppointment = async (appointment = {}) => coreDatabaseHandler.fetchO
 
 module.exports = {
     createAppointment,
+    getAppointmentByUserIdAndRole,
 };

@@ -27,6 +27,7 @@ const ERROR_MESSAGES_MAP = {
     PET_NOT_ADDED: 'Please register your pet before booking an appointment',
     SERVICES_NOT_FOUND: 'No Services are Currently Offered',
     DOCTORS_NOT_FOUND: 'No Doctors are are available for the selected timeslots.',
+    APPOINTMENT_IN_PAST: 'Please select a Date in the future',
 };
 
 /**
@@ -151,7 +152,7 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
     };
 
     const setStateValue = setStateFunction => (event) => {
-        console.log('setStateValue+++++++event.target.value++++++', event.target.value);
+        console.log('setStateValue ====> ', event.target.value);
         setStateFunction(event.target.value);
     };
 
@@ -282,7 +283,7 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
                 }
             } catch (e) {
                 setError({
-                    errorCode: 'DOCTORS_NOT_FOUND',
+                    errorCode: e.message,
                 });
             } finally {
                 setDoctorLoading(false);
@@ -293,6 +294,10 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
             initializeViewData();
         }
     }, [appointmentDate, startTime, duration]);
+
+    const currentDate = new Date();
+
+    const currentDateString = `${currentDate.getUTCFullYear()}-${currentDate.getUTCMonth()}-${currentDate.getUTCDate()}`;
 
     const appointmentBookingForm = (
         <>
@@ -314,6 +319,7 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
             <FormField>
                 <Input
                     type={'date'}
+                    min={currentDateString}
                     value={appointmentDate}
                     name={'appointmentDate'}
                     id={'appointmentDate'}
@@ -341,21 +347,32 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
             {
                 (duration > 0) && (totalPrice > 0) && (
                     <FormField>
-                        <Typography Element={'h3'}>You&apos;ll have to spend about {duration} mins during your visit and it will cost you ${totalPrice}.</Typography>
+                        <Typography Element={'h5'}>You&apos;ll have to spend about {duration} mins during your visit and it will cost you ${totalPrice}.</Typography>
                     </FormField>
                 )
             }
             {
                 !isEmpty(doctorsOption) && (
-                    <FormField>
+                    <>
                         <FormField>
-                            <Typography Element={'h3'}>Who do you want to consult with?</Typography>
+                            <FormField>
+                                <Typography Element={'h3'}>Who do you want to consult with?</Typography>
+                            </FormField>
+                            <Select
+                                options={doctorsOption}
+                                onChange={setStateValue(setVeterinarianId)}
+                            />
                         </FormField>
-                        <Select
-                            options={doctorsOption}
-                            onChange={setStateValue(setVeterinarianId)}
-                        />
-                    </FormField>
+                        <FormField>
+                            <Input
+                                type={'notes'}
+                                value={notes}
+                                label={'Any notes for the doc ?'}
+                                name={'notes'}
+                                id={'notes'}
+                                onChange={setStateValue(setNotes)}/>
+                        </FormField>
+                    </>
                 )
             }
             <FormField centerAlignContent={true}>

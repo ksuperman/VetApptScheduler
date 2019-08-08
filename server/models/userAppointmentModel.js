@@ -2,39 +2,43 @@ const userModel = require('./userModel');
 const appointmentModel = require('./appointmentModel');
 
 const getAppointmentByOverlappingStarttimes = appointmentStartDateTimeStamp => '(Select a.id, u.id, u.first_name, a.start_time, a.end_time '
-    + 'from public.appointment a, public.user u '
+    + `from ${appointmentModel.TABLE_NAME} a, ${userModel.TABLE_NAME} u `
     + 'WHERE a.veterinarian_id = u.id '
     + `AND (a.start_time >= '${appointmentStartDateTimeStamp}') `
     + 'INTERSECT '
     + 'Select a.id, u.id, u.first_name, a.start_time, a.end_time '
     + `from ${appointmentModel.TABLE_NAME} a, ${userModel.TABLE_NAME} u `
     + 'WHERE a.veterinarian_id = u.id '
+    + `AND (a.status = '${appointmentModel.TABLE_COLUMN_ENUMS.STATUS.ACTIVE}') `
     + `AND (a.start_time <= '${appointmentStartDateTimeStamp}'))`;
 
 const getAppointmentByOverlappingEndtimes = appointmentEndDateTimeStamp => '(Select a.id, u.id, u.first_name, a.start_time, a.end_time '
-    + 'from public.appointment a, public.user u '
+    + `from ${appointmentModel.TABLE_NAME} a, ${userModel.TABLE_NAME} u `
     + 'WHERE a.veterinarian_id = u.id '
     + `AND (a.end_time >= '${appointmentEndDateTimeStamp}') `
     + 'INTERSECT '
     + 'Select a.id, u.id, u.first_name, a.start_time, a.end_time '
     + `from ${appointmentModel.TABLE_NAME} a, ${userModel.TABLE_NAME} u `
     + 'WHERE a.veterinarian_id = u.id '
+    + `AND (a.status = '${appointmentModel.TABLE_COLUMN_ENUMS.STATUS.ACTIVE}') `
     + `AND (a.end_time <= '${appointmentEndDateTimeStamp}'))`;
 
 const getAppointmentByStartOverlappingEndTimes = (appointmentStartDateTimeStamp, appointmentEndDateTimeStamp) => '(Select a.id, u.id, u.first_name, a.start_time, a.end_time '
-    + 'from public.appointment a, public.user u '
+    + `from ${appointmentModel.TABLE_NAME} a, ${userModel.TABLE_NAME} u `
     + 'WHERE a.veterinarian_id = u.id '
     + `AND (a.start_time >= '${appointmentStartDateTimeStamp}') `
     + 'INTERSECT '
     + 'Select a.id, u.id, u.first_name, a.start_time, a.end_time '
     + `from ${appointmentModel.TABLE_NAME} a, ${userModel.TABLE_NAME} u `
     + 'WHERE a.veterinarian_id = u.id '
+    + `AND (a.status = '${appointmentModel.TABLE_COLUMN_ENUMS.STATUS.ACTIVE}') `
     + `AND (a.start_time <= '${appointmentEndDateTimeStamp}'))`;
 
 
-const getAppointmentByStartAndEndDateWithinRange = (appointmentStartDateTimeStamp, appointmentEndDateTimeStamp) => '(Select a.id, u.id, u.first_name, a.start_time, a.end_time'
-    + ' from public.appointment a, public.user u '
+const getAppointmentByStartAndEndDateWithinRange = (appointmentStartDateTimeStamp, appointmentEndDateTimeStamp) => '(Select a.id, u.id, u.first_name, a.start_time, a.end_time '
+    + `from ${appointmentModel.TABLE_NAME} a, ${userModel.TABLE_NAME} u `
     + 'WHERE a.veterinarian_id = u.id '
+    + `AND (a.status = '${appointmentModel.TABLE_COLUMN_ENUMS.STATUS.ACTIVE}') `
     + `AND (a.start_time <= '${appointmentStartDateTimeStamp}') `
     + `AND (a.end_time >= '${appointmentEndDateTimeStamp}'))`;
 
