@@ -1,5 +1,10 @@
 const LRU = require('lru-cache');
 
+const MAX_AGE = {
+    '1HOUR': 60 * 60 * 1000,
+    '2MINS': 2 * 60 * 1000,
+};
+
 const LRU_DEFAULT_CONFIG = {
     // The maximum size of the cache, checked by applying the length function to all values in the cache.
     // Not setting this is kind of silly, since that's the whole purpose of this lib, but it defaults to
@@ -11,7 +16,7 @@ const LRU_DEFAULT_CONFIG = {
     // too old, it'll drop it and return undefined instead of giving it to you. Setting this to a negative value
     // will make everything seem old! Setting it to a non-number will throw a TypeError.
     // Defaulted to 1 Hour
-    maxAge: 60 * 60 * 1000,
+    maxAge: MAX_AGE['1HOUR'],
 };
 
 /**
@@ -46,5 +51,7 @@ class LRUCache {
         return this._lruCacheInstance.del(key);
     }
 }
+
+module.exports.MAX_AGE = MAX_AGE;
 
 module.exports = LRUCache;

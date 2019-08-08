@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import Chart from 'react-google-charts';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Layout from '../../components/PageLayout';
-import { logoutUser, getUsersByFilter } from '../../utils/user';
+import { getUsersByFilter, logoutUser } from '../../utils/user';
 import { getServicesPaginated } from '../../utils/services';
 import ColumnLayout from '../../components/ColumnLayout';
 import appContext, { APP_CONTEXT_PROP_NAME } from '../../components/ApplicationContext/appContextDecorator';
@@ -28,6 +27,14 @@ const ERROR_MESSAGES_MAP = {
     PET_NOT_ADDED: 'Please register your pet before booking an appointment',
     SERVICES_NOT_FOUND: 'No Services are Currently Offered',
     DOCTORS_NOT_FOUND: 'No Doctors are are available for the selected timeslots.',
+};
+
+/**
+ * Method to Calculate End Time based on the
+ */
+const calculateEndTimeByStartTimeObjAndDuration = (sqlDateObj, duration) => {
+    const endTimeObject = addMinutes(sqlDateObj, duration);
+    return `${endTimeObject.getUTCHours()}:${endTimeObject.getUTCMinutes()}`;
 };
 
 const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, user = {} } }) => {
@@ -63,6 +70,7 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
     // Screen State
     const [error, setError] = useState({});
     const [submitted, setSubmitted] = useState(false);
+    const [appointmentCreated, setAppointmentCreated] = useState(false);
 
     // Loading States
     const [petLoading, setPetLoading] = useState(false);
@@ -104,19 +112,34 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
         });
     }
 
+    /**
+     * @TODO Extract API logic to Higher Order Component
+     */
     const onSubmit = async (event) => {
         event.stopPropagation();
         event.preventDefault();
         setSubmitted(true);
         try {
+            const sqlDateObj = getDateFromSQLTimeStamp(appointmentDate, startTime);
+            const endTime = calculateEndTimeByStartTimeObjAndDuration(sqlDateObj, duration);
             const result = await makeAPIRequest({
-                url: '/api/login',
+                url: `/api/users/${user.id}/appointments`,
                 data: {
+                    petId,
+                    veterinarianId,
+                    appointmentDate,
+                    startTime,
+                    endTime,
+                    duration,
+                    notes,
+                    totalPrice,
+                    selectedServiceIds,
                 },
             });
-            console.log('results');
-            if (result.status === 200) {
-                // history.push('/dashboard');
+            console.log('onSubmit, result', result);
+            if (result.status === 201) {
+                setAppointmentCreated(true);
+                setError('');
             } else {
                 setError(result.data);
             }
@@ -168,6 +191,7 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
      */
     useEffect(() => {
         async function initializePetDataFetch() {
+            setError('');
             setPetLoading(true);
             try {
                 const getPetForPetOwnerResponse = await getPetForPetOwner(user.id) || {};
@@ -198,6 +222,7 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
      */
     useEffect(() => {
         async function initializeServicesData() {
+            setError('');
             setServicesLoading(true);
             try {
                 const getServicesPaginatedResponse = await getServicesPaginated() || {};
@@ -230,12 +255,12 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
     useEffect(() => {
         // c
         async function initializeViewData() {
+            setError('');
             setDoctorLoading(true);
             try {
                 const sqlDateObj = getDateFromSQLTimeStamp(appointmentDate, startTime);
                 console.log('sqlDateObj', sqlDateObj.toString());
-                const endTimeObject = addMinutes(sqlDateObj, duration);
-                const endTime = `${endTimeObject.getUTCHours()}:${endTimeObject.getUTCMinutes()}`;
+                const endTime = calculateEndTimeByStartTimeObjAndDuration(sqlDateObj, duration);
                 const getUsersByFilterResponse = await getUsersByFilter({
                     role: ROLE_TYPE.DOCTOR,
                     appointmentDate,
@@ -269,78 +294,97 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
         }
     }, [appointmentDate, startTime, duration]);
 
+    const appointmentBookingForm = (
+        <>
+            <FormField>
+                <Typography Element={'h2'} centerAlign={true}>Book an appointment for your pet</Typography>
+            </FormField>
+            <FormField>
+                <FormField>
+                    <Typography Element={'h3'}>Who is this appointment for ?</Typography>
+                </FormField>
+                <Select
+                    options={pets}
+                    onChange={setStateValue(setPetId)}
+                />
+            </FormField>
+            <FormField>
+                <Typography Element={'h3'}>When do you want to visit ?</Typography>
+            </FormField>
+            <FormField>
+                <Input
+                    type={'date'}
+                    value={appointmentDate}
+                    name={'appointmentDate'}
+                    id={'appointmentDate'}
+                    onChange={setStateValue(setAppointmentDate)}/>
+            </FormField>
+            <FormField>
+                <Input
+                    id="appt-time"
+                    type="time"
+                    name="appt-time"
+                    required
+                    pattern="[0-9]{2}:[0-9]{2}"
+                    onChange={setStateValue(setStartTime)}/>
+            </FormField>
+            <FormField>
+                <Typography Element={'h3'}>What services do you want ?</Typography>
+            </FormField>
+            <FormField>
+                <Select
+                    multiple={true}
+                    options={servicesOptions}
+                    onChange={updateSelectedServices}
+                />
+            </FormField>
+            {
+                (duration > 0) && (totalPrice > 0) && (
+                    <FormField>
+                        <Typography Element={'h3'}>You&apos;ll have to spend about {duration} mins during your visit and it will cost you ${totalPrice}.</Typography>
+                    </FormField>
+                )
+            }
+            {
+                !isEmpty(doctorsOption) && (
+                    <FormField>
+                        <FormField>
+                            <Typography Element={'h3'}>Who do you want to consult with?</Typography>
+                        </FormField>
+                        <Select
+                            options={doctorsOption}
+                            onChange={setStateValue(setVeterinarianId)}
+                        />
+                    </FormField>
+                )
+            }
+            <FormField centerAlignContent={true}>
+                <Button type="submit" disabled={!shouldEnableAppointmentBooking || submitted}>{submitted ? <Spinner/> : 'Book Appointment'}</Button>
+            </FormField>
+            {
+                error && error.errorCode && (
+                    <FormField>
+                        <Typography Element={'h5'} centerAlign={true} >{ERROR_MESSAGES_MAP[error.errorCode]}</Typography>
+                    </FormField>
+                )
+            }
+        </>
+    );
+
     return (
         <Layout Header={<Header buttons={headerButtons}/>} Footer={ <Footer />}>
             <ColumnLayout>
                 <Form onSubmit={onSubmit}>
                     { isLoading && <Loading className={styles.MakeAppointment__Loading}/> }
-                    <FormField>
-                        <Typography Element={'h2'} centerAlign={true}>Book an appointment for your pet</Typography>
-                    </FormField>
-                    <FormField>
-                        <Select
-                            label={'Who is this appointment for ?'}
-                            options={pets}
-                            onChange={setStateValue(setPetId)}
-                        />
-                    </FormField>
-                    <FormField>
-                        <Typography Element={'h3'}>When do you want to visit?</Typography>
-                    </FormField>
-                    <FormField>
-                        <Input
-                            type={'date'}
-                            value={appointmentDate}
-                            name={'appointmentDate'}
-                            id={'appointmentDate'}
-                            onChange={setStateValue(setAppointmentDate)}/>
-                    </FormField>
-                    <FormField>
-                        <Input
-                            id="appt-time"
-                            type="time"
-                            name="appt-time"
-                            required
-                            pattern="[0-9]{2}:[0-9]{2}"
-                            onChange={setStateValue(setStartTime)}/>
-                    </FormField>
-                    <FormField>
-                        <Typography Element={'h3'}>What services do you want?</Typography>
-                    </FormField>
-                    <FormField>
-                        <Select
-                            multiple={true}
-                            options={servicesOptions}
-                            onChange={updateSelectedServices}
-                        />
-                    </FormField>
                     {
-                        (duration > 0) && (totalPrice > 0) && (
-                            <FormField>
-                                <Typography Element={'h3'}>You&apos;ll have to spend about {duration} mins during your visit and it will cost you ${totalPrice}.</Typography>
-                            </FormField>
-                        )
+                        /* if Appointment is not created show appointmentBookingForm */
+                        !appointmentCreated && appointmentBookingForm
                     }
                     {
-                        !isEmpty(doctorsOption) && (
+                        /* if Appointment is not created show appointmentBookingForm */
+                        appointmentCreated && (
                             <FormField>
-                                <FormField>
-                                    <Typography Element={'h3'}>Who do you want to consult with?</Typography>
-                                </FormField>
-                                <Select
-                                    options={doctorsOption}
-                                    onChange={setStateValue(setVeterinarianId)}
-                                />
-                            </FormField>
-                        )
-                    }
-                    <FormField centerAlignContent={true}>
-                        <Button type="submit" disabled={!shouldEnableAppointmentBooking || submitted}>{submitted ? <Spinner/> : 'Book Appointment'}</Button>
-                    </FormField>
-                    {
-                        error && error.errorCode && (
-                            <FormField>
-                                <Typography Element={'h5'} centerAlign={true} >{ERROR_MESSAGES_MAP[error.errorCode]}</Typography>
+                                <Typography Element={'h2'} centerAlign={true} >Appointment booked, we are looking forward for your visit on {appointmentDate} at {startTime}. Please make sure you have your schedule free for atleast {duration} mins.</Typography>
                             </FormField>
                         )
                     }

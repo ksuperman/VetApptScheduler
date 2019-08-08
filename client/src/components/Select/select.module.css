@@ -2,6 +2,8 @@
     width: 100%;
     line-height: 1.5;
     height: 30px;
+    background: white;
+    background-color: white;
 }
 
 .Select__InputPlaceholder {
@@ -11,10 +13,6 @@
     padding: 6px 0 0 7px;
     transition: all 200ms;
     opacity: 0.5;
-    width: 100%;
-}
-.Select__Container{
-    line-height: 1.5;
     width: 100%;
 }
 

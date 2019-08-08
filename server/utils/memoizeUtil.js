@@ -39,7 +39,7 @@ const _generateCacheKey = async (wrappedFunctionName, functionArguments) => {
  */
 function memoize(wrappedFunction, cacheInstance, cacheOptions = {}) {
     debug('memoize==>wrappedFunction==>', wrappedFunction.name);
-    const cache = new Cache({ cacheInstance, ...cacheOptions });
+    const cache = cacheInstance || new Cache({ ...cacheOptions });
     return async function memoized() {
         // Get the Argument passed to the function
         // eslint-disable-next-line prefer-rest-params
@@ -84,5 +84,7 @@ function memoize(wrappedFunction, cacheInstance, cacheOptions = {}) {
         return result;
     };
 }
+
+module.exports.CACHE_MAX_AGE = Cache.MAX_AGE;
 
 module.exports = memoize;

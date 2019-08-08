@@ -41,10 +41,11 @@ const SECURED_SERVER_ROUTE_URL = {
     MAKE_APPOINTMENT: '/makeappointment',
     ADD_PET: '/addpet',
     API: '/api',
-    GET_PETS: '/users/:userId/pets',
-    GET_USERS: '/users',
-    GET_SERVICES: '/services',
-}
+    PETS_API: '/users/:userId/pets',
+    USER_API: '/users',
+    SERVICES_API: '/services',
+    APPOINTMENT_API: '/users/:userId/appointments',
+};
 
 module.exports = {
     DEFAULT_SERVER_PORT,

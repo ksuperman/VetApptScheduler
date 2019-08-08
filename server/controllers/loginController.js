@@ -1,6 +1,8 @@
 const passport = require('passport');
 const debug = require('debug')('vetapptschduler:loginController');
-const { SECURED_SERVER_ROUTE_URL, SERVER_ROUTE_URL, PASSPORT_AUTH_STRATEGY, HTTP_STATUS_CODES } = require('../constants');
+const {
+    SECURED_SERVER_ROUTE_URL, SERVER_ROUTE_URL, PASSPORT_AUTH_STRATEGY, HTTP_STATUS_CODES,
+} = require('../constants');
 
 const postLoginController = (req, res, next) => {
     passport.authenticate(PASSPORT_AUTH_STRATEGY.LOCAL, (error, user, info) => {
