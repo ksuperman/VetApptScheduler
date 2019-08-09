@@ -45,6 +45,7 @@ const SECURED_SERVER_ROUTE_URL = {
     USER_API: '/users',
     SERVICES_API: '/services',
     APPOINTMENT_API: '/users/:userId/appointments',
+    APPOINTMENT_API_PATCH: '/users/:userId/appointments/:appointmentId',
 };
 
 module.exports = {

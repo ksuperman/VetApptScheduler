@@ -5,15 +5,11 @@ import FormField from '../FormField';
 import Typography from '../Typography';
 import { makeAPIRequest } from '../../utils/api';
 import { formatAppointmentDateTimeToDisplayString } from '../../utils/date';
-import Button from '../Button';
+import CancelAppointment from '../CancelAppointment';
 import { APPOINTMENT_STATUS_MAP, ROLE_TYPE } from '../../constants';
 
 const ERROR_MESSAGES_MAP = {
     NO_APPOINTMENTS_FOUND: 'Seems like you haven\'t booked any appointments with us',
-};
-
-const cancelAppointment = (appointmentId, userId) => {
-    console.log('cancelAppointment======>', appointmentId);
 };
 
 const AppointmentList = ({ user }) => {
@@ -21,10 +17,18 @@ const AppointmentList = ({ user }) => {
     const [appointments, setAppointments] = useState([]);
     const [errors, setErrors] = useState([]);
 
+    const cancelAppointment = async (appointmentId, userId) => {
+        console.log('cancelAppointment======>', appointmentId);
+        const result = await makeAPIRequest({
+            url: `/api/users/${user.id}/appointments/${appointmentId}`,
+            method: 'PATCH',
+        }) || {};
+    };
+
     // Columns of the Table.
     const columnsNames = ['Doctor', 'Appointment Schedule', 'Pet Name', ' Appointment Status', 'Total Cost', 'Cancel'];
     if (user.role === ROLE_TYPE.DOCTOR) {
-        columnsNames.splice(1, 0, 'Pet Owner');
+        columnsNames.splice(0, 1, ['Pet Owner']);
     }
 
     // Effect to fetch user's appointment.
@@ -39,23 +43,13 @@ const AppointmentList = ({ user }) => {
                 if (result.status === 200 && result) {
                     const appointmentsFromAPI = result.data;
                     const formatterAppointmentData = appointmentsFromAPI.reduce((formattedAppointments, currentAppointmentRecord) => {
-                        let formattedAppointmentRow = {
-                            id: currentAppointmentRecord.id,
-                            petName: currentAppointmentRecord.petname,
-                            status: currentAppointmentRecord.status,
-                            price: currentAppointmentRecord.total_price,
-                            appointmentTime: formatAppointmentDateTimeToDisplayString(currentAppointmentRecord.start_time, currentAppointmentRecord.end_time),
-                            cancellationReason: currentAppointmentRecord.cancellation_reason,
-                            doctorName: `${currentAppointmentRecord.doclastname}, ${currentAppointmentRecord.docfirstname}`,
-                            ownerName: `${currentAppointmentRecord.ownerfirstname}, ${currentAppointmentRecord.ownerfirstname}`,
-                        };
-                        formattedAppointmentRow = [
+                        const formattedAppointmentRow = [
                             (user.role === ROLE_TYPE.DOCTOR) ? `${currentAppointmentRecord.ownerfirstname}, ${currentAppointmentRecord.ownerfirstname}` : `${currentAppointmentRecord.doclastname}, ${currentAppointmentRecord.docfirstname}`,
                             formatAppointmentDateTimeToDisplayString(currentAppointmentRecord.start_time, currentAppointmentRecord.end_time),
                             currentAppointmentRecord.petname,
                             APPOINTMENT_STATUS_MAP[currentAppointmentRecord.status],
-                            currentAppointmentRecord.total_price,
-                            <Button key={currentAppointmentRecord.id} onClick={() => cancelAppointment(currentAppointmentRecord.id)}>Cancel</Button>,
+                            `$${currentAppointmentRecord.total_price}`,
+                            <CancelAppointment key={`${user.id}-${currentAppointmentRecord.id}`} userId={user.id} appointment={currentAppointmentRecord}/>,
                         ];
                         formattedAppointments.push(formattedAppointmentRow);
                         return formattedAppointments;
@@ -84,7 +78,7 @@ const AppointmentList = ({ user }) => {
                 </FormField>
             </Form>
         ) : (
-            <ResponsiveTable columns={columnsNames} data={appointments} />
+            <ResponsiveTable heading={'Your Appointments'} columns={columnsNames} data={appointments} />
         )
     );
 };

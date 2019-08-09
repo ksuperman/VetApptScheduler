@@ -32,6 +32,8 @@ securedApiRouter.post(SECURED_SERVER_ROUTE_URL.APPOINTMENT_API, asyncRouteHandle
 
 securedApiRouter.get(SECURED_SERVER_ROUTE_URL.APPOINTMENT_API, asyncRouteHandler(appointmentController.get));
 
+securedApiRouter.patch(SECURED_SERVER_ROUTE_URL.APPOINTMENT_API_PATCH, asyncRouteHandler(appointmentController.patch));
+
 // API Error handler Middleware.
 securedApiRouter.use((err, req, res, next) => {
     debug('securedApiRouter::error::', err);

@@ -1,5 +1,5 @@
 const debug = require('debug')('vetapptschduler:appointmentController');
-const { createAppointment, getAppointmentByUserIdAndRole } = require('../dao/appointmentDao');
+const { createAppointment, getAppointmentByUserIdAndRole, cancelAppointmentByApptId } = require('../dao/appointmentDao');
 const { getUserByAppointmentAndRole } = require('../controllers/accountController');
 const { HTTP_STATUS_CODES } = require('../constants');
 /**
@@ -64,14 +64,18 @@ const getUserAppointments = async (req, res, next) => {
 const cancelAppointment = async (req, res, next) => {
     const { userId, appointmentId } = req.params;
 
+    const { cancelReason = 'Appointment Cancelled' } = req.body;
+
     debug('cancelAppointment request :: userId', userId);
 
     debug('cancelAppointment request :: appointmentId', appointmentId);
 
-    const appointments = await getAppointmentByUserIdAndRole(appointmentId);
+    const appointments = await cancelAppointmentByApptId(appointmentId, cancelReason);
+
+    debug('cancelAppointment PATCHED :: appointmentId', appointmentId);
 
     res.status(HTTP_STATUS_CODES.OK).json([...appointments]);
-}
+};
 
 module.exports = {
     patch: cancelAppointment,

@@ -1,3 +1,4 @@
+
 .ResponsiveTable {
     display: flex;
     flex-wrap: wrap;
@@ -7,6 +8,11 @@
     left: 3px;
     max-width: 900px;
     margin: auto;
+}
+.ResponsiveTable__Heading {
+    background-color: rgba(51,51,51,.3);
+    padding: 9px;
+    text-align: center;
 }
 .ResponsiveTable__Cell {
     box-sizing: border-box;
@@ -20,21 +26,16 @@
     margin: -3px 0 0 -3px;
     background-color: white;
     border-color: #e2e6e9;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 .ResponsiveTable__Cell > h3 {
     margin: 0;
 }
 
-
-.ResponsiveTable--2cols > .ResponsiveTable__Cell {
-    width: 50%;
-}
-.ResponsiveTable--3cols > .ResponsiveTable__Cell {
-    width: 33.33%;
-}
-.ResponsiveTable--4cols > .ResponsiveTable__Cell {
-    width: 25%;
-}
 .ResponsiveTable--5cols > .ResponsiveTable__Cell {
     width: 20%;
 }
@@ -43,10 +44,15 @@
 }
 
 .ResponsiveTable__Cell--Head {
-    background-color: slategrey;
-    border-color: #5a6673;
-    color: white;
+    background-color: #32c1ce;
+    border-color: #e2e6e9;
+    color: #fff;
 }
+
+.ResponsiveTable__Cell--Tail{
+    background-color: #32c1ce;
+}
+
 .ResponsiveTable__Cell__CollpsedColHeader {
     display: none;
 }
@@ -59,14 +65,17 @@
 .ResponsiveTable__Cell--Head > h6 {
     color: white;
 }
-/* Responsive
-==================================== */
+
 @media all and (max-width: 600px) {
     .ResponsiveTable__Cell--Head {
         display: none;
     }
+    .ResponsiveTable__Cell--Tail{
+        margin-bottom: 10px;
+    }
     .ResponsiveTable--Collapse {
         /*display: block;*/
+        padding-bottom: 35px;
     }
     .ResponsiveTable--Collapse > .ResponsiveTable__Cell__CollpsedColHeader {
         display: block;
