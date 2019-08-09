@@ -2,7 +2,8 @@ const userModel = require('./userModel');
 const appointmentModel = require('./appointmentModel');
 const petModel = require('./petModel');
 
-const getAppointments = 'SELECT u.id, apointment_date, start_time, end_time, notes, total_price, a.status, cancellation_reason, doc.first_name as docFirstName, doc.last_name as docLastName, p.name as petName '
+const getAppointments = 'SELECT a.id, apointment_date, start_time, end_time, notes, total_price, a.status, '
+    + 'cancellation_reason, doc.first_name as docFirstName, doc.last_name as docLastName, p.name as petName, u.first_name as ownerFirstName, u.last_name as ownerLastName '
     + `FROM ${appointmentModel.TABLE_NAME} a, ${userModel.TABLE_NAME} u, ${userModel.TABLE_NAME} doc, ${petModel.TABLE_NAME} p `
     + 'WHERE '
     + 'a.pet_owner_id = u.id '

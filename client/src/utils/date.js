@@ -21,3 +21,24 @@ export const getDateFromSQLTimeStamp = (sqlDateString = '', sqlTimeString = '00:
     // Return the Converted Date Object.
     return new Date(Date.UTC(...sqlDateStringArr, ...sqlTimeStringArr));
 };
+
+export const formatAppointmentDateTimeToDisplayString = (startDateTime, endDateTime) => {
+    const dateFormatOptions = {
+        weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', formatMatcher: 'best fit',
+    };
+    const timeFormatOptions = {
+        hour: 'numeric',
+        minute: 'numeric',
+    };
+
+    const currentLocale = navigator.language || 'en-US';
+
+    const dateFomatter = new Intl.DateTimeFormat(currentLocale, dateFormatOptions);
+    const timeFomatter = new Intl.DateTimeFormat(currentLocale, timeFormatOptions);
+
+    const startDateObj = new Date(startDateTime);
+    const endDateObj = new Date(endDateTime);
+
+    // @TODO handle Different locales
+    return `${dateFomatter.format(startDateObj)} ${timeFomatter.format(startDateObj)} - ${timeFomatter.format(endDateObj)}`;
+};
