@@ -57,7 +57,24 @@ const getUserAppointments = async (req, res, next) => {
     res.status(HTTP_STATUS_CODES.OK).json([...appointments]);
 };
 
+/**
+ * Cancel appointment for a perticular user.
+ * e.g. req.params: { "userId": "34" }
+ */
+const cancelAppointment = async (req, res, next) => {
+    const { userId, appointmentId } = req.params;
+
+    debug('cancelAppointment request :: userId', userId);
+
+    debug('cancelAppointment request :: appointmentId', appointmentId);
+
+    const appointments = await getAppointmentByUserIdAndRole(appointmentId);
+
+    res.status(HTTP_STATUS_CODES.OK).json([...appointments]);
+}
+
 module.exports = {
+    patch: cancelAppointment,
     get: getUserAppointments,
     post: createAppointmentInDB,
 };

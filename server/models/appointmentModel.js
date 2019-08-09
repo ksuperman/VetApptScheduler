@@ -59,6 +59,7 @@ const tableColumnNames = Object.keys(TABLE_COLUMNS);
  */
 const SQL_STATEMENT_BY_OPERATION = {
     INSERT_APPOINTMENT: `INSERT INTO ${TABLE_NAME} (${tableColumnNames.slice(1).join(',')}) VALUES (${tableColumnNames.slice(1).map((column, index) => `$${index + 1}`).join(',')}) RETURNING *`,
+    CANCEL_APPOINTMENT: `UPDATE ${TABLE_NAME} SET status='$1', cancellation_reason='$2' WHERE id = $3`,
 };
 
 /**

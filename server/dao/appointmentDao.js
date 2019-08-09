@@ -10,12 +10,18 @@ const userPetAppointmentModel = require('../models/userPetAppointmentModel');
 const coreDatabaseHandler = getDatabaseHandler(DATA_SOURCE_CORE_DATA, {});
 
 /**
- * Method to get the appointments by user.
+ * Method to get the appointments For Pet owner id.
  */
 const getAppointmentForPetOwner = async userId => coreDatabaseHandler.fetchAllRows(userPetAppointmentModel.SQL_STATEMENT_BY_OPERATION.GET_USER_APPOINTMENT_BY_PET_OWNER_ID, [userId]);
 
+/**
+ * Method to get the appointments For Doctor id.
+ */
 const getAppointmentForDoctor = async userId => coreDatabaseHandler.fetchAllRows(userPetAppointmentModel.SQL_STATEMENT_BY_OPERATION.GET_USER_APPOINTMENT_BY_DOCTOR_ID, [userId]);
 
+/**
+ * Method to get the appointments For userid and Role.
+ */
 const getAppointmentByUserIdAndRole = async (userId, role) => {
     if (role === 'PET_OWNER') {
         return getAppointmentForPetOwner(userId);
@@ -23,6 +29,12 @@ const getAppointmentByUserIdAndRole = async (userId, role) => {
 
     return getAppointmentForDoctor(userId);
 };
+
+/**
+ * Cancel an appointment
+ */
+// eslint-disable-next-line max-len
+const cancelAppointmentByApptId = async (appointmentId, cancellationReason) => coreDatabaseHandler.fetchOrInsertOne(appointmentModel.SQL_STATEMENT_BY_OPERATION.CANCEL_APPOINTMENT, [appointmentModel.TABLE_COLUMN_ENUMS.STATUS.CANCELLED, cancellationReason, appointmentId]);
 
 /**
  * Method to create Appointment.
@@ -47,4 +59,5 @@ const createAppointment = async (appointment = {}) => coreDatabaseHandler.fetchO
 module.exports = {
     createAppointment,
     getAppointmentByUserIdAndRole,
+    cancelAppointmentByApptId,
 };

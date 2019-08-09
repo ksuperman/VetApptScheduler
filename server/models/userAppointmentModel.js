@@ -42,7 +42,6 @@ const getAppointmentByStartAndEndDateWithinRange = (appointmentStartDateTimeStam
     + `AND (a.start_time <= '${appointmentStartDateTimeStamp}') `
     + `AND (a.end_time >= '${appointmentEndDateTimeStamp}'))`;
 
-
 /**
  * Select to Get Appointment which overlap with Start and End time.
  */
