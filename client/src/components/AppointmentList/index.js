@@ -17,14 +17,6 @@ const AppointmentList = ({ user }) => {
     const [appointments, setAppointments] = useState([]);
     const [errors, setErrors] = useState([]);
 
-    const cancelAppointment = async (appointmentId, userId) => {
-        console.log('cancelAppointment======>', appointmentId);
-        const result = await makeAPIRequest({
-            url: `/api/users/${user.id}/appointments/${appointmentId}`,
-            method: 'PATCH',
-        }) || {};
-    };
-
     // Columns of the Table.
     const columnsNames = ['Doctor', 'Appointment Schedule', 'Pet Name', ' Appointment Status', 'Total Cost', 'Cancel'];
     if (user.role === ROLE_TYPE.DOCTOR) {

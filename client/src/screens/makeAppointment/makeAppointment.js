@@ -282,6 +282,8 @@ const MakeAppointmentScreen = ({ history, [APP_CONTEXT_PROP_NAME]: { dispatch, u
                     throw new Error('DOCTORS_NOT_FOUND');
                 }
             } catch (e) {
+                setDoctorsOptions([]);
+                setDoctors([]);
                 setError({
                     errorCode: e.message,
                 });

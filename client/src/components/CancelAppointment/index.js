@@ -31,8 +31,6 @@ const CancelAppointment = ({ userId, appointment }) => {
         if (!showCancelReasonForm) {
             setShowCancelReasonForm(true);
         } else {
-            setShowCancelReasonForm(false);
-            setIsAppointmentCancellable(false);
             const result = await makeAPIRequest({
                 url: `/api/users/${userId}/appointments/${id}`,
                 method: 'PATCH',
@@ -40,12 +38,12 @@ const CancelAppointment = ({ userId, appointment }) => {
                     cancelReason,
                 },
             }) || {};
+            if (result.status === 200) {
+                setShowCancelReasonForm(false);
+                setIsAppointmentCancellable(false);
+            }
         }
     };
-
-    console.log('isFutureAppointment', isFutureAppointment);
-    console.log(' new Date().getTime()', new Date().getTime());
-    console.log('new Date(startTime).getTime()', new Date(startTime).getTime());
 
     const cancelForm = (
         <div>
