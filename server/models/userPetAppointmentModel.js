@@ -11,9 +11,9 @@ const getAppointments = 'SELECT a.id, apointment_date, start_time, end_time, not
     + 'AND a.pet_id = p.id '
     + 'AND u.id = 53';
 
-const GET_USER_APPOINTMENT_BY_PET_OWNER_ID = `${getAppointments} AND u.id = $1`;
+const GET_USER_APPOINTMENT_BY_PET_OWNER_ID = `${getAppointments} AND u.id = $1 ORDER BY start_time DESC`;
 
-const GET_USER_APPOINTMENT_BY_DOCTOR_ID = `${getAppointments} AND doc.id = $1`;
+const GET_USER_APPOINTMENT_BY_DOCTOR_ID = `${getAppointments} AND doc.id = $1 ORDER BY start_time DESC`;
 
 /**
  * Object Constant containing the Mappings for the Operations to the relevant SQL Statement.

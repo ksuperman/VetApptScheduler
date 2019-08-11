@@ -5,6 +5,7 @@ const { generateHashForData } = require('../helpers/cryptoHelper');
 const { HTTP_STATUS_CODES } = require('../constants');
 const { isEmpty } = require('../utils/objectUtils');
 const { getSQLTimeStampStringFromDateAndTimeString } = require('../utils/dateUtils');
+const { createCustomerInQuickBooks } = require('../lib/quickbooks');
 
 /**
  * Controller Method for the Create Account.
@@ -21,6 +22,14 @@ const createAccountInDB = async (req, res, next) => {
     user.password = await generateHashForData(user.password);
 
     await createAccount(user);
+
+    try {
+        const customer = await createCustomerInQuickBooks({ name: `${user.firstName} ${user.lastName}`, email: user.email });
+
+        debug('createAccountInDB customer ::', customer);
+    } catch (e) {
+        debug('createAccountInDB customer :: ERROR :::%e', e);
+    }
 
     debug('createAccountInDB::user account created :: ', user);
 

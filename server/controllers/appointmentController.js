@@ -1,6 +1,7 @@
 const debug = require('debug')('vetapptschduler:appointmentController');
 const { createAppointment, getAppointmentByUserIdAndRole, cancelAppointmentByApptId } = require('../dao/appointmentDao');
 const { getUserByAppointmentAndRole } = require('../controllers/accountController');
+const { createEstimateInQuickBooks, createCustomerInQuickBooks, sendEstimatePdf } = require('../lib/quickbooks');
 const { HTTP_STATUS_CODES } = require('../constants');
 /**
  * Create an apointment for the user.
@@ -34,6 +35,30 @@ const createAppointmentInDB = async (req, res, next) => {
         ...appointmentRequest,
     });
 
+    const {
+        user: {
+            first_name: firstName,
+            last_name: lastName,
+            email,
+        } = {},
+    } = req;
+
+    try {
+        const customer = await createCustomerInQuickBooks({ name: `${firstName} ${lastName}`, email }) || {};
+
+        debug('createAppointment customer ::', customer);
+
+        const estimate = await createEstimateInQuickBooks({ customer, amount: appointmentRequest.totalPrice }) || {};
+
+        debug('createAppointment estimate ::', estimate);
+
+        const estimatePdf = await sendEstimatePdf({ estimateId: estimate.Id });
+
+        debug('createAppointment estimatePdf ::', estimatePdf);
+    } catch (e) {
+        debug('createAppointment estimate :: ERROR :::%e', e);
+    }
+
     debug('createAppointment appointment FROM DB ::', appointment);
 
     return res.status(HTTP_STATUS_CODES.CREATED).json({ ...appointment });
@@ -52,7 +77,7 @@ const getUserAppointments = async (req, res, next) => {
 
     debug('getUserAppointments request :: role', role);
 
-    const appointments = await getAppointmentByUserIdAndRole(userId, role);
+    const appointments = await getAppointmentByUserIdAndRole(userId, role) || [];
 
     res.status(HTTP_STATUS_CODES.OK).json([...appointments]);
 };
@@ -70,11 +95,11 @@ const cancelAppointment = async (req, res, next) => {
 
     debug('cancelAppointment request :: appointmentId', appointmentId);
 
-    const appointments = await cancelAppointmentByApptId(appointmentId, cancelReason);
+    await cancelAppointmentByApptId(appointmentId, cancelReason);
 
     debug('cancelAppointment PATCHED :: appointmentId', appointmentId);
 
-    res.status(HTTP_STATUS_CODES.OK).json([...appointments]);
+    res.status(HTTP_STATUS_CODES.OK).json([]);
 };
 
 module.exports = {
