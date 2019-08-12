@@ -10,6 +10,7 @@
 .InputField__Input{
     line-height: 1.5;
     width: 100%;
+    background: white;
 }
 
 .InputField__Input:focus + .InputField__InputPlaceholder,
