@@ -52,7 +52,7 @@
     "babel-loader": "^8.0.6",
     "babel-plugin-dynamic-import-webpack": "^1.1.0",
     "babel-plugin-react-css-modules": "^5.2.6",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "classnames": "^2.2.6",
     "compression": "^1.7.4",
     "concurrently": "^4.1.1",
