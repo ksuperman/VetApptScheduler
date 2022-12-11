@@ -68,7 +68,7 @@
     "eslint-loader": "^2.2.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-react": "^7.14.3",
-    "express": "~4.17.1",
+    "express": "~4.17.3",
     "express-device": "^0.4.2",
     "express-session": "^1.16.2",
     "http-errors": "~1.7.3",
